@@ -20,9 +20,11 @@ def create_app(config_name):
     from app.routes.alumno_routes import alumno_routes
     from app.routes.docente_routes import docente_routes
     from app.routes.main_routes import main_routes
+    from app.routes.usuario_routes import usuario_routes
 
     app.register_blueprint(alumno_routes, url_prefix='/alumno')
     app.register_blueprint(docente_routes, url_prefix='/docente')
+    app.register_blueprint(usuario_routes, url_prefix='/usuario')
     app.register_blueprint(main_routes, url_prefix='/')
 
     return app

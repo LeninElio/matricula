@@ -4,7 +4,7 @@ from app.controllers.docente_controller import DocenteController
 docente_routes = Blueprint('docente_routes', __name__)
 
 
-@docente_routes.route('/', methods=['POST'])
+@docente_routes.route('/create', methods=['POST'])
 def create():
     data = request.json
     docente = DocenteController.create(data)
