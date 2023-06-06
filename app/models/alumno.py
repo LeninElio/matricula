@@ -13,7 +13,7 @@ class Alumno(db.Model):
 class AlumnoSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Alumno
-        exclude = ('id',)
+        # exclude = ('id',)
         # ordered = False
 
     id = ma.auto_field()

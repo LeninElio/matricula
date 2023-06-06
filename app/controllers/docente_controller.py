@@ -7,15 +7,8 @@ from app.controllers.usuario_controller import UsuarioController
 
 class DocenteController:
 
-    # @staticmethod
-    # def create(data):
-    #     docente = Docente(id_usuario=data['id_usuario'])
-    #     db.session.add(docente)
-    #     db.session.commit()
-    #     return docente_schema.dump(docente)
-
     @staticmethod
-    def create(data):
+    def crear(data):
         usuario = Usuario.query.filter_by(email=data['email']).first()
         if usuario:
             return {"Error": "El correo ya existe."}
@@ -25,23 +18,24 @@ class DocenteController:
                 'nombre': data['nombre'],
                 'email': data['email']
             }
-            usuario = UsuarioController.create(usuario_data)
+            usuario = UsuarioController.crear(usuario_data)
             docente = Docente(id_usuario=usuario['id'])
             db.session.add(docente)
             db.session.commit()
             return docente_schema.dump(docente)
 
     @staticmethod
-    def read():
+    def docentes_todos():
         docentes = Docente.query.all()
         return docentes_schema.dump(docentes)
 
     @staticmethod
-    def read_one(id):
+    def un_docente(id):
         docente = Docente.query.get(id)
         return docente_schema.dump(docente)
 
     @staticmethod
-    def todos():
-        docentes = Docente.query.join(Usuario, Docente.id_usuario == Usuario.id).all()
-        return docentes_schema.dump(docentes)
+    def eliminar_docente(id):
+        docente = Docente.query.get(id)
+        db.session.delete(docente)
+        db.session.commit()

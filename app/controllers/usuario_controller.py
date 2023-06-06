@@ -6,7 +6,7 @@ from app.models import usuario_schema, usuarios_schema
 class UsuarioController:
 
     @staticmethod
-    def create(data):
+    def crear(data):
         usuario = Usuario(
             nombre=data['nombre'],
             email=data['email']
@@ -16,6 +16,6 @@ class UsuarioController:
         return usuario_schema.dump(usuario)
 
     @staticmethod
-    def read():
-        alumnos = Usuario.query.all()
-        return usuarios_schema.dump(alumnos)
+    def usuarios_todos():
+        usuarios = Usuario.query.all()
+        return usuarios_schema.dump(usuarios)

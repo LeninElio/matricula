@@ -1,32 +1,36 @@
 from flask import Blueprint, request, jsonify
+from app.models.docente import Docente
 from app.controllers.docente_controller import DocenteController
 
 docente_routes = Blueprint('docente_routes', __name__)
 
 
 @docente_routes.route('/create', methods=['POST'])
-def create():
+def crear():
     data = request.json
-    docente = DocenteController.create(data)
+    docente = DocenteController.crear(data)
     return jsonify(docente)
 
 
 @docente_routes.route('/', methods=['GET'])
-def read():
-    docentes = DocenteController.read()
+def docentes_todos():
+    docentes = DocenteController.docentes_todos()
     return jsonify(docentes)
 
 
 @docente_routes.route('/<int:id>', methods=['GET'])
-def docente_solo(id):
-    docente = DocenteController.read_one(id)
+def un_docente(id):
+    docente = DocenteController.un_docente(id)
     if docente:
         return jsonify(docente)
     else:
         return jsonify({'error': f'El docente {id} no existe.'}), 404
 
 
-@docente_routes.route('/todos', methods=['GET'])
-def todos():
-    docentes = DocenteController.todos()
-    return jsonify(docentes)
+@docente_routes.route('/<int:id>', methods=['DELETE'])
+def eliminar_docente(id):
+    docente = Docente.query.get(id)
+    if docente is None:
+        return jsonify({'error': 'Docente no encontrado.'}), 404
+    DocenteController.eliminar_docente(id)
+    return jsonify({'message': 'Docente eliminado.'}), 200
