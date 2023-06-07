@@ -1,6 +1,5 @@
 from app import db
 from app.models.alumno import Alumno
-from app.models.usuario import Usuario
 from app.models import alumno_schema, alumnos_schema
 from app.controllers.usuario_controller import UsuarioController
 
@@ -9,16 +8,11 @@ class AlumnoController:
 
     @staticmethod
     def crear(data):
-        usuario = Usuario.query.filter_by(email=data['email']).first()
-        if usuario:
-            return {"Error": "El correo ya existe."}
+        usuario = UsuarioController.crear(data)
+        if usuario.get('error') is not None:
+            return usuario
 
         else:
-            usuario_data = {
-                'nombre': data['nombre'],
-                'email': data['email']
-            }
-            usuario = UsuarioController.crear(usuario_data)
             alumno = Alumno(id_usuario=usuario['id'])
             db.session.add(alumno)
             db.session.commit()
