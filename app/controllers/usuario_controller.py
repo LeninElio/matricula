@@ -46,3 +46,11 @@ class UsuarioController:
         usuario = Usuario.query.get(id)
         db.session.delete(usuario)
         db.session.commit()
+
+    @staticmethod
+    def actualizar_usuario(id, data):
+        usuario = Usuario.query.get(id)
+        if 'nombre' in data:
+            usuario.nombre = data['nombre']
+        db.session.commit()
+        return usuario

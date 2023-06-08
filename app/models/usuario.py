@@ -12,6 +12,18 @@ class Usuario(db.Model):
     password = db.Column(db.String(200), nullable=False)
     sexo = db.Column(db.Boolean())
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nombre': self.nombre,
+            'apellido_paterno': self.apellido_paterno,
+            'apellido_materno': self.apellido_materno,
+            'email': self.email,
+            'username': self.username,
+            'password': self.password,
+            'sexo': self.sexo
+        }
+
 
 class UsuarioSchema(ma.Schema):
     class Meta:

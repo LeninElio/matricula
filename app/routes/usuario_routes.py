@@ -46,3 +46,10 @@ def eliminar_usuario(id):
 
     UsuarioController.eliminar_usuario(id)
     return jsonify({'message': 'Usuario eliminado.'}), 200
+
+
+@usuario_routes.route('/<int:id>', methods=['PUT'])
+def actualizar_usuario(id):
+    data = request.get_json()
+    usuario = UsuarioController.actualizar_usuario(id, data)
+    return jsonify(usuario.to_dict()), 200
