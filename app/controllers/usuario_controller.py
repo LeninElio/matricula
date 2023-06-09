@@ -2,12 +2,22 @@ from app import db
 from werkzeug.security import generate_password_hash
 from app.models.alumno import Usuario
 from app.models import usuario_schema, usuarios_schema
+from app.utils import validacion
+from jsonschema import validate
+from jsonschema.exceptions import ValidationError
 
 
 class UsuarioController:
 
     @staticmethod
     def crear(data):
+        try:
+            validate(instance=data, schema=validacion.schema)
+        except ValidationError:
+            return {'error': 'Hay valores no admitidos en los datos.'}
+        except Exception as e:
+            return e
+
         correo = Usuario.query.filter_by(email=data['email']).first()
         username = Usuario.query.filter_by(username=data['username']).first()
         if correo:
@@ -49,8 +59,21 @@ class UsuarioController:
 
     @staticmethod
     def actualizar_usuario(id, data):
+        try:
+            validate(instance=data, schema=validacion.schema)
+        except ValidationError:
+            return {'error': 'Hay valores no admitidos en los datos.'}
+        except Exception as e:
+            return e
+
         usuario = Usuario.query.get(id)
-        if 'nombre' in data:
-            usuario.nombre = data['nombre']
+        if 'username' in data and data['username'] != usuario.username:
+            username = Usuario.query.filter_by(username=data['username']).first()
+            if username:
+                return {'error': 'El nombre de usuario ya esta en uso.'}
+
+        for key in data:
+            if key != 'password':
+                setattr(usuario, key, data[key])
         db.session.commit()
-        return usuario
+        return usuario.to_dict()

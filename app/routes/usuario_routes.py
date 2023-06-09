@@ -52,4 +52,4 @@ def eliminar_usuario(id):
 def actualizar_usuario(id):
     data = request.get_json()
     usuario = UsuarioController.actualizar_usuario(id, data)
-    return jsonify(usuario.to_dict()), 200
+    return jsonify(usuario), 200

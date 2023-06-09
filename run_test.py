@@ -1,10 +1,21 @@
 # class UsuarioSchema(ma.Schema):
 #     nombreUsuario = ma.Str(attribute='nombre')
 #     emailUsuario = ma.Str(attribute='email')
+from flask import Flask, jsonify
 
-data = {'nombre': 'juan'}
+app = Flask(__name__)
 
-if 'nombre' in data:
-    print(data['nombre'])
-else:
-    print('no hay')
+data = {
+    "nombre": "Editadooo",
+    "apellido_materno": "Patrie editado",
+    "apellido_paterno": "Chandler editado",
+    "sexo": 0,
+    "email": "edit@gmail.com",
+    "username": "cspedit",
+    "password": "paswordcitoedit"
+}
+
+with app.app_context():
+    # datos = jsonify(data)
+    for key in data:
+        print(data[key])

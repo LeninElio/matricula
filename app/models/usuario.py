@@ -20,7 +20,7 @@ class Usuario(db.Model):
             'apellido_materno': self.apellido_materno,
             'email': self.email,
             'username': self.username,
-            'password': self.password,
+            # 'password': self.password,
             'sexo': self.sexo
         }
 
