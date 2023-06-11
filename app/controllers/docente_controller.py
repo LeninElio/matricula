@@ -33,3 +33,9 @@ class DocenteController:
         docente = Docente.query.get(id)
         db.session.delete(docente)
         db.session.commit()
+
+    @staticmethod
+    def actualizar_docente(id, data):
+        id_usuario = Docente.query.get(id)
+        actualiza_usuario = UsuarioController.actualizar_usuario(id_usuario.id_usuario, data)
+        return actualiza_usuario

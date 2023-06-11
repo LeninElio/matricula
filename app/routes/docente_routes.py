@@ -34,3 +34,14 @@ def eliminar_docente(id):
         return jsonify({'error': 'Docente no encontrado.'}), 404
     DocenteController.eliminar_docente(id)
     return jsonify({'message': 'Docente eliminado.'}), 200
+
+
+@docente_routes.route('/<int:id>', methods=['PUT'])
+def actualizar_docente(id):
+    data = request.get_json()
+    docente = DocenteController.actualizar_docente(id, data)
+    if docente.get('error') is not None:
+        return docente
+    else:
+        id_usuario = Docente.query.filter_by(id_usuario=docente['id']).first()
+        return DocenteController.un_docente(id_usuario.id)

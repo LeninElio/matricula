@@ -1,6 +1,12 @@
 # class UsuarioSchema(ma.Schema):
 #     nombreUsuario = ma.Str(attribute='nombre')
 #     emailUsuario = ma.Str(attribute='email')
+# BUG: Ayudaaa
+# COMMENT: Comentario
+# FIXME: Corrigeme
+# NOTE: Nota
+# [.]: Abrir
+# [x]: Listo
 from flask import Flask, jsonify
 
 app = Flask(__name__)
@@ -16,6 +22,6 @@ data = {
 }
 
 with app.app_context():
-    # datos = jsonify(data)
+    datos = jsonify(data)
     for key in data:
         print(data[key])
