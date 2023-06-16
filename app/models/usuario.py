@@ -1,7 +1,14 @@
+"""
+Este módulo define el modelo y el esquema para la entidad Alumno.
+"""
+
 from app import db, ma
 
 
 class Usuario(db.Model):
+    """
+    Define la tabla Usuario en la base de datos.
+    """
     __tablename__ = 'usuario'
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(50), nullable=False)
@@ -26,6 +33,9 @@ class Usuario(db.Model):
 
 
 class UsuarioSchema(ma.Schema):
+    """
+    Define el esquema para serializar y deserializar instancias de Usuario.
+    """
     class Meta:
         # ordered = False
         # fields = ('id', 'nombre', 'email')
