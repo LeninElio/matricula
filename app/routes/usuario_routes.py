@@ -37,7 +37,7 @@ def usuarios_todos():
     return jsonify(usuarios)
 
 
-@usuario_routes.route('/<int:id>', methods=['GET'])
+@usuario_routes.route('/<int:id_usuario>', methods=['GET'])
 def un_usuario(id_usuario):
     """
     Esta función recupera a un usuario por su ID y devuelve su información en formato JSON,
@@ -54,10 +54,10 @@ def un_usuario(id_usuario):
     usuario = UsuarioController.un_usuario(id_usuario)
     if usuario:
         return jsonify(usuario)
-    return jsonify({'error': f'El usuario {id} no existe.'}), 404
+    return jsonify({'error': f'El usuario {id_usuario} no existe.'}), 404
 
 
-@usuario_routes.route('/<int:id>', methods=['DELETE'])
+@usuario_routes.route('/<int:id_usuario>', methods=['DELETE'])
 def eliminar_usuario(id_usuario):
     """
     Esta función elimina a un usuario del sistema, pero solo si no está designado como docente o
@@ -71,8 +71,8 @@ def eliminar_usuario(id_usuario):
     la función devuelve un mensaje de error con un código de estado de 404 (No encontrado).
     """
     usuario = Usuario.query.get(id_usuario)
-    docente = Docente.query.filter_by(id_usuario=id).first()
-    alumno = Alumno.query.filter_by(id_usuario=id).first()
+    docente = Docente.query.filter_by(id=id_usuario).first()
+    alumno = Alumno.query.filter_by(id=id_usuario).first()
 
     if docente is not None:
         return jsonify({'error': 'El usuario esta designado como docente, primero eliminelo.'}), 409

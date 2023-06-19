@@ -2,17 +2,44 @@
 Modulo de redireccionamiento principal.
 """
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, session
+from app.models.usuario import Usuario
+from app.auth.login import login
+from app.utils.auth import requires_auth
 
 main_routes = Blueprint('main_routes', __name__)
 
 
+@main_routes.route('/login', methods=['POST'])
+def user_login():
+    """
+    Funcion para el inicio de session.
+    """
+    return login()
+
+
+@main_routes.route('/logout')
+def logout():
+    """
+    Eliminar la sesión de usuario
+    """
+    session.pop('user_id', None)
+    mensaje = {'message': 'Sesión cerrada exitosamente'}
+    return jsonify(mensaje)
+
+
 @main_routes.route('/', methods=['GET'])
-def principal():
+@main_routes.route('/home', methods=['GET'])
+@requires_auth
+def home():
     """
-    La función devuelve un objeto JSON con un mensaje de bienvenida.
-    :return: La función `principal()` devuelve un objeto JSON que contiene el mensaje 
-    "Bienvenido" como valor asociado a la clave "mensaje".
+    :return: La función `home()` devuelve un objeto JSON de bienvenida
     """
-    mensaje = {'mensaje': 'Bienvenido'}
+    user_id = session.get('user_id')
+    if not user_id:
+        mensaje = {'error': 'Debe iniciar session.'}
+        return jsonify(mensaje)
+
+    user = Usuario.query.get(user_id)
+    mensaje = {'message': f'Bienvenido {user.nombre}'}
     return jsonify(mensaje)

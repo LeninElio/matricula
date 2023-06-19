@@ -18,6 +18,7 @@ class Usuario(db.Model):
     username = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(200), nullable=False)
     sexo = db.Column(db.Boolean())
+    is_admin = db.Column(db.Boolean())
 
     def to_dict(self):
         return {

@@ -1,12 +1,12 @@
 """
 Modulo para el manejo de usuarios.
 """
-
 from werkzeug.security import generate_password_hash
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 from app.models import usuario_schema, usuarios_schema
-from app.utils import validacion
+from app.utils import validation
+from app.utils.auth import requires_auth
 from app.models.alumno import Usuario
 from app import db
 
@@ -27,7 +27,7 @@ class UsuarioController:
         :return: ya sea un mensaje de error o los datos de un usuario recién creado.
         """
         try:
-            validate(instance=data, schema=validacion.schema)
+            validate(instance=data, schema=validation.schema)
         except ValidationError:
             return {'error': 'Hay valores no admitidos en los datos.'}
 
@@ -55,6 +55,7 @@ class UsuarioController:
         return usuario_schema.dump(usuario)
 
     @staticmethod
+    @requires_auth
     def usuarios_todos():
         """
         Esta función recupera todos los usuarios de la base de datos y los devuelve como 
@@ -66,6 +67,7 @@ class UsuarioController:
         return usuarios_schema.dump(usuarios)
 
     @staticmethod
+    @requires_auth
     def un_usuario(id_usuario):
         """
         La función recupera un objeto de usuario de la base de datos y devuelve su representación
@@ -105,7 +107,7 @@ class UsuarioController:
         'error' y un mensaje que indica que hay valores no permitidos en los datos.
         """
         try:
-            validate(instance=data, schema=validacion.schema)
+            validate(instance=data, schema=validation.schema)
         except ValidationError:
             return {'error': 'Hay valores no admitidos en los datos.'}
 
