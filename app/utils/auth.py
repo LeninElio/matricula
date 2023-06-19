@@ -1,6 +1,6 @@
 from functools import wraps
 import jwt
-from flask import request, abort, session
+from flask import request, abort, session, make_response, jsonify
 from app.auth.tokens import JWT_SECRET_KEY
 from app.models.usuario import Usuario
 
@@ -8,41 +8,40 @@ from app.models.usuario import Usuario
 def requires_auth(func): # pylint: disable=missing-docstring
     @wraps(func)
     def wrapper(*args, **kwargs):
-        # Verificar si el usuario ha iniciado sesión
         user_id = session.get('user_id')
         if not user_id:
-            return {'error': 'Fallo en el login.'}
+            return {'error': 'El usuario no ha iniciado sesion.'}
 
-        # Verificar si el usuario tiene los permisos necesarios
         user = Usuario.query.get(user_id)
         if not user or not user.is_admin:
-            print('IS ADMIIIIN', user.is_admin)
-            abort(401)
+            response = make_response(jsonify(message="Debe ser un usuario administrador."), 401)
+            abort(response)
 
-        # Verificar si el token de autenticación es válido
         token = request.headers.get('Authorization')
         if not token:
-            print('Fallo en el token')
-            abort(401)
+            response = make_response(jsonify(message="Fallo en la autorizacion del token."), 401)
+            abort(response)
 
         try:
             payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=['HS256'])
             user_id = payload.get('sub')
             if not user_id:
-                abort(401)
+                response = make_response(jsonify(message="Fallo en la decodificacion."), 401)
+                abort(response)
 
-            # Verificar si el usuario existe en la base de datos
             user = Usuario.query.get(user_id)
             if not user:
-                abort(401)
+                response = make_response(jsonify(message="El usuario no existe."), 401)
+                abort(response)
 
         except jwt.ExpiredSignatureError:
-            abort(401)
+            response = make_response(jsonify(message="Token expirado."), 401)
+            abort(response)
 
         except (jwt.InvalidTokenError, Exception): # pylint: disable=broad-except
-            abort(401)
+            response = make_response(jsonify(message="Token invalido."), 401)
+            abort(response)
 
-        # Si todas las validaciones son exitosas, llamar a la función original
         return func(*args, **kwargs)
 
     return wrapper

@@ -1,22 +1,18 @@
 from flask import request, session
 from app.auth.auth import authenticate
+from app.auth.tokens import generate_token
 
 def login(): # pylint: disable=missing-docstring
     if request.method == 'POST':
-        # Obtener los datos ingresados por el usuario
         username = request.json.get('username')
         password = request.json.get('password')
 
-        # Autenticar al usuario
         user = authenticate(username, password)
 
         if user:
-            # Crear una sesión de usuario
             session['user_id'] = user.id
+            access_token = generate_token(user.id)
 
-            # Retornar los datos del usuario autenticado en formato JSON
-            return {'user': user.to_dict()}
-        # Si las credenciales son inválidas, retornar un mensaje de error en formato JSON
+            return {'user': user.to_dict()} | {"access_token": access_token}
         return {'error': 'Usuario o contraseña inválidos'}
-    # Si la solicitud no es POST, retornar un mensaje de error en formato JSON
-    return {'error': 'Solicitud no válida'}
+    return {'error': 'Metodo de solicitud no válida.'}
